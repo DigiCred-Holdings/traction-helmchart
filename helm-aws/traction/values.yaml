@@ -1,0 +1,145 @@
+#tractionAcapyImageBuilder:
+#  image: 
+#    repository: ghcr.io/nas2020/plugins-acapy
+#    tag: latest
+#    pullPolicy: Always
+#  entrypoint: "/bin/bash"
+#  tty: true
+
+tractionAgent:
+  image: 
+    repository: ghcr.io/nas2020/traction-agent
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    adminPort: 8031
+    httpPort: 8030
+    adminTargetPort: 8031
+    httpTargetPort: 8030
+
+tenantUi:
+  image: 
+    repository: ghcr.io/nas2020/tenant-ui
+    tag: latest
+    pullPolicy: Always
+  service:
+    port: 5101
+    targetPort: 8080
+    type: ClusterIP
+
+tenantProxy:
+  image: 
+    repository: ghcr.io/nas2020/tenant-proxy
+    tag: latest
+    pullPolicy: Always
+  service:
+    port: 8032
+    targetPort: 8080
+    type: ClusterIP
+  
+tractionDb:
+  image: 
+    repository: "postgres"
+    tag: "14.5"
+    pullPolicy: Always
+  service:
+    port: 5432
+    targetPort: 5432
+    type: ClusterIP
+  volume:
+    mountPath: /var/lib/postgresql/data
+    subPath: pgdata
+    name: traction-wallet
+
+endorserDb:
+  image: 
+    repository: "postgres"
+    tag: "14.5"
+    pullPolicy: Always
+  service:
+    port: 5432
+    targetPort: 5432
+    type: ClusterIP
+  volume:
+    mountPath: /var/lib/postgresql/data
+    subPath: pgdata
+    name: endorser-wallet
+
+endorserDb1:
+  image: 
+    repository: "postgres"
+    tag: "14.5"
+    pullPolicy: Always
+  service:
+    port: 5432
+    targetPort: 5432
+    type: ClusterIP
+  volume:
+    mountPath: /var/lib/postgresql/data
+    subPath: pgdata
+    name: endorser-wallet-1
+
+endorserAgent:
+  image:
+    repository: "ghcr.io/hyperledger/aries-cloudagent-python"
+    tag: "py3.9-0.11.0"
+    pullPolicy: Always
+  service:
+    port:
+      http: 9030
+      admin: 9031
+    type: ClusterIP
+
+endorserApi:
+  image:
+    repository: ghcr.io/nas2020/endorser-api
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 5300
+    targetPort: 5000
+  
+endorserAgent1:
+  image:
+    repository: "ghcr.io/hyperledger/aries-cloudagent-python"
+    tag: "py3.9-0.11.0"
+    pullPolicy: Always
+  service:
+    port:
+      http: 9032
+      admin: 9033
+    type: ClusterIP
+  
+endorserApi1:
+  image:
+    repository: ghcr.io/nas2020/endorser-api
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 5301
+    targetPort: 5001
+  
+maildev:
+  image:
+    repository: maildev/maildev
+    tag: latest
+    pullPolicy: Always
+  ports:
+    web:
+      containerPort: 1080
+      hostPort: 1080
+    smtp:
+      containerPort: 1025
+      hostPort: 1025
+  service:
+    type: ClusterIP
+    ports:
+      web:
+        port: 1080
+        targetPort: 1080
+      smtp:
+        port: 1025
+        targetPort: 1025

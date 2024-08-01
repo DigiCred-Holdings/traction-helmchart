@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tractionapp-tls
+  namespace: demo-tenant
+spec:
+  secretName: tractionapp-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: tractionapp.digicred.services
+  dnsNames:
+  - tractionapp.digicred.services

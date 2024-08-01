@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenant-proxy
+  template:
+    metadata:
+      labels:
+        app: tenant-proxy
+    spec:
+      containers:
+        - name: tenant-proxy
+          image: "{{ .Values.tenantProxy.image.repository }}:{{ .Values.tenantProxy.image.tag }}"
+          imagePullPolicy: {{ .Values.tenantProxy.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: tenant-proxy-config
+          - secretRef:
+              name: tenant-proxy-secrets
+          ports:
+            - containerPort: {{ .Values.tenantProxy.service.targetPort }}
+              name: http

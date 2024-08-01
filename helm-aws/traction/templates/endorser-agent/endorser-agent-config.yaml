@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: endorser-agent-config
+  labels:
+    app: endorser-agent
+data:
+  RUST_LOG: error
+  ACAPY_ENDORSER_ADMIN_PORT: "9031"
+  ACAPY_ENDORSER_HTTP_PORT: "9030"
+  ACAPY_ENDORSER_ENDPOINT: "https://tractionapp.digicred.services/endorser-agent-http"
+  ENDORSER_AGENT_NAME: "Endorser Agent"
+  ENDORSER_ACAPY_READ_ONLY_MODE: ""
+  ENDORSER_WEBHOOK_URL: "http://endorser-api:5000/webhook"
+  ACAPY_GENESIS_URL: "http://genesis.digicred.services:9000/genesis"
+  ENDORSER_ACAPY_WALLET_TYPE: "askar"
+  ENDORSER_ACAPY_WALLET_STORAGE_TYPE: "postgres_storage"
+  ENDORSER_ACAPY_WALLET_DATABASE: "endorser-wallet"
+  ENDORSER_POSTGRESQL_HOST: "endorser-db"
+  POSTGRESQL_DB: "traction_acapy"
+  

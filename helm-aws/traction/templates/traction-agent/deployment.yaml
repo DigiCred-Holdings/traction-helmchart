@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traction-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traction-agent
+  template:
+    metadata:
+      labels:
+        app: traction-agent
+    spec:
+      containers:
+        - name: traction-agent
+          image: "{{ .Values.tractionAgent.image.repository }}:{{ .Values.tractionAgent.image.tag }}"
+          imagePullPolicy: {{ .Values.tractionAgent.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.tractionAgent.service.adminTargetPort }} 
+            - containerPort: {{ .Values.tractionAgent.service.httpTargetPort }} 
+          envFrom:
+          - configMapRef:
+              name: traction-agent-config
+          - secretRef:
+              name: traction-agent-secrets
+          command: ["/bin/bash"]
+          args: ["-c", "sleep 5; ./ngrok-wait.sh"]
+          volumeMounts:
+            - name: plugin-config
+              mountPath: /home/aries/plugin-config.yml
+              subPath: plugin-config.yml
+            - name: ledgers-config
+              mountPath: /home/aries/ledgers.yml
+              subPath: ledgers.yml
+      volumes:
+        - name: plugin-config
+          configMap:
+            name: traction-plugin-config
+        - name: ledgers-config
+          configMap:
+            name: traction-ledgers-config
+      restartPolicy: Always
