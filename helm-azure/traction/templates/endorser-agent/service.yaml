@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: endorser-agent
+  labels:
+    app: endorser-agent
+spec:
+  type: ClusterIP
+  ports:
+    - name: admin
+      port: {{ .Values.endorserAgent.service.port.admin }}
+      targetPort: {{ .Values.endorserAgent.service.port.admin }}
+    - name: http
+      port: {{ .Values.endorserAgent.service.port.http }}
+      targetPort: {{ .Values.endorserAgent.service.port.http }}
+  selector:
+    app: endorser-agent

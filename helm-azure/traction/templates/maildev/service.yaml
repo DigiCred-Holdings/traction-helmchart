@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maildev
+  labels:
+    app: maildev
+spec:
+  type: {{ .Values.maildev.service.type }}
+  ports:
+    - name: web
+      port: {{ .Values.maildev.service.ports.web.port }}
+      targetPort: {{ .Values.maildev.service.ports.web.targetPort }}
+    - name: smtp
+      port: {{ .Values.maildev.service.ports.smtp.port }}
+      targetPort: {{ .Values.maildev.service.ports.smtp.targetPort }}
+  selector:
+    app: maildev

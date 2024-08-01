@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traction-db
+  labels:
+    app: traction-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traction-db
+  template:
+    metadata:
+      labels:
+        app: traction-db
+    spec:
+      containers:
+        - name: traction-db
+          image: "{{ .Values.tractionDb.image.repository }}:{{ .Values.tractionDb.image.tag }}"
+          imagePullPolicy: "{{ .Values.tractionDb.image.pullPolicy }}"
+          envFrom:
+          - configMapRef:
+              name: traction-db-config
+          - secretRef:
+              name: traction-db-secrets
+          ports:
+            - containerPort: {{ .Values.tractionDb.service.targetPort }}
+          volumeMounts:
+            - mountPath: {{ .Values.tractionDb.volume.mountPath }}
+              subPath: {{ .Values.tractionDb.volume.subPath }}
+              name: {{ .Values.tractionDb.volume.name }}
+          livenessProbe:
+            exec:
+              command:
+              - "pg_isready"
+              - "-U"
+              - "postgres"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+              - "pg_isready"
+              - "-U"
+              - "postgres"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: {{ .Values.tractionDb.volume.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.tractionDb.volume.name }}
