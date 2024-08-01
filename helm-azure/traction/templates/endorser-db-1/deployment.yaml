@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: endorser-db-1
+  labels:
+    app: endorser-db-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: endorser-db-1
+  template:
+    metadata:
+      labels:
+        app: endorser-db-1
+    spec:
+      containers:
+        - name: endorser-db-1
+          image: "{{ .Values.endorserDb1.image.repository }}:{{ .Values.endorserDb1.image.tag }}"
+          imagePullPolicy: "{{ .Values.endorserDb1.image.pullPolicy }}"
+          envFrom:
+          - configMapRef: 
+              name: endorser-db1-config
+          - secretRef:
+              name: endorser-db1-secrets
+          ports:
+            - containerPort: {{ .Values.endorserDb1.service.targetPort }}
+          volumeMounts:
+            - mountPath: {{ .Values.endorserDb1.volume.mountPath }}
+              subPath: {{ .Values.endorserDb1.volume.subPath }}
+              name: {{ .Values.endorserDb1.volume.name }}
+          livenessProbe:
+            exec:
+              command:
+              - "pg_isready"
+              - "-U"
+              - "postgres"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+              - "pg_isready"
+              - "-U"
+              - "postgres"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: {{ .Values.endorserDb1.volume.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.endorserDb1.volume.name }}

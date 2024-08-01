@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: endorser-db
+  labels:
+    app: endorser-db
+spec:
+  type: {{ .Values.endorserDb.service.type }}
+  ports:
+    - port: {{ .Values.endorserDb.service.port }}
+      targetPort: {{ .Values.endorserDb.service.targetPort }}
+  selector:
+    app: endorser-db

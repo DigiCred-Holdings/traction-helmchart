@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maildev
+  labels:
+    app: maildev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maildev
+  template:
+    metadata:
+      labels:
+        app: maildev
+    spec:
+      containers:
+        - name: maildev
+          image: "{{ .Values.maildev.image.repository }}:{{ .Values.maildev.image.tag }}"
+          imagePullPolicy: "{{ .Values.maildev.image.pullPolicy }}"
+          ports:
+            - name: web
+              containerPort: {{ .Values.maildev.ports.web.containerPort }}
+            - name: smtp
+              containerPort: {{ .Values.maildev.ports.smtp.containerPort }}

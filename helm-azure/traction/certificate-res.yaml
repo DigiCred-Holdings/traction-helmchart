@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tractionapp-azure-tls
+  namespace: demo-tenant
+spec:
+  secretName: tractionapp-azure-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: traction.mytestapp.co
+  dnsNames:
+  - traction.mytestapp.co

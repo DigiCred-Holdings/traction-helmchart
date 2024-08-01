@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenant-ui
+  template:
+    metadata:
+      labels:
+        app: tenant-ui
+    spec:
+      containers:
+        - name: tenant-ui
+          image: "{{ .Values.tenantUi.image.repository }}:{{ .Values.tenantUi.image.tag }}"
+          imagePullPolicy: {{ .Values.tenantUi.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.tenantUi.service.targetPort }}
+              name: http
+          envFrom:
+          - configMapRef:
+              name: tenant-ui-config
+          

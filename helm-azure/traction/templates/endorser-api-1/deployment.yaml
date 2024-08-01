@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: endorser-api-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: endorser-api-1
+  template:
+    metadata:
+      labels:
+        app: endorser-api-1
+    spec:
+      containers:
+        - name: endorser-api-1
+          image: "{{ .Values.endorserApi1.image.repository }}:{{ .Values.endorserApi1.image.tag }}"
+          imagePullPolicy: {{ .Values.endorserApi1.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.endorserApi1.service.targetPort }}
+          envFrom:
+          - configMapRef:
+              name: endorser-api1-config
+          - secretRef:
+              name: endorser-api1-secrets
+          
